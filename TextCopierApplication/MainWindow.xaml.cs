@@ -1,18 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TextCopierApplication
 {
@@ -21,8 +13,10 @@ namespace TextCopierApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        Thread thread;
         public MainWindow()
         {
+
             InitializeComponent();
         }
 
@@ -40,7 +34,8 @@ namespace TextCopierApplication
             if (result == true)
             {
                 FromTextBox.Text = dialog.FileName;
-                StartButton.IsEnabled = true;
+                if (FromTextBox.Text != string.Empty && ToTextBox.Text != string.Empty)
+                    StartButton.IsEnabled = true;
             }
         }
         private void ToButton_Click(object sender, RoutedEventArgs e)
@@ -57,8 +52,78 @@ namespace TextCopierApplication
             if (result == true)
             {
                 ToTextBox.Text = dialog.FileName;
-                StartButton.IsEnabled = true;
+                if (FromTextBox.Text != string.Empty && ToTextBox.Text != string.Empty)
+                    StartButton.IsEnabled = true;
             }
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (File.Exists(FromTextBox.Text))
+                {
+                    SuspendButton.IsEnabled = true;
+                    string text = File.ReadAllText(FromTextBox.Text);
+                    ProgressBar.Maximum = text.Length;
+                    thread = new Thread(
+                        () =>
+                        {
+                            StringBuilder writeText = new StringBuilder();
+                            foreach (var c in text)
+                            {
+                                writeText.Append(c);
+                                Dispatcher.Invoke(() =>
+                                {
+                                    File.WriteAllText(ToTextBox.Text, writeText.ToString());
+                                    ProgressBar.Value++;
+                                });
+                                Thread.Sleep(20);
+                            }
+
+                            MessageBox.Show("File copied succesfully", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                            Dispatcher.Invoke(() =>
+                            {
+                                ProgressBar.Value = 0;
+                                FromTextBox.Clear();
+                                ToTextBox.Clear();
+                                StartButton.IsEnabled = false;
+                            });
+                        });
+                    thread.Start();
+                    StartButton.IsEnabled = false;
+                }
+                else
+                {
+                    throw new NotImplementedException("File path not exist");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                FromTextBox.Clear();
+                ToTextBox.Clear();
+            }
+        }
+
+        private void ResumeButton_Click(object sender, RoutedEventArgs e)
+        {
+            thread.Resume();
+            SuspendButton.IsEnabled = true;
+            ResumeButton.IsEnabled = false;
+        }
+
+        private void SuspendButton_Click(object sender, RoutedEventArgs e)
+        {
+            thread.Suspend();
+            ResumeButton.IsEnabled = true;
+            SuspendButton.IsEnabled = false;
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (FromTextBox.Text != string.Empty && ToTextBox.Text != string.Empty)
+                StartButton.IsEnabled = true;
         }
     }
 }
