@@ -3,10 +3,54 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TextCopierApplication"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="2.2*" />
+                <ColumnDefinition Width="0.8*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="From" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+            <TextBox x:Name="FromTextBox" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Width="500" materialDesign:HintAssist.Hint=" Enter Full File Path"/>
+            <Button Grid.Column="2" Content="Open" FontSize="25" Height="50" Width="150" Click="FromButton_Click"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*" />
+                <ColumnDefinition Width="2.2*" />
+                <ColumnDefinition Width="0.8*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="To" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+            <TextBox x:Name="ToTextBox" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Width="500" materialDesign:HintAssist.Hint=" Enter Full File Path"/>
+            <Button Grid.Column="2" Content="Open" FontSize="25" Height="50" Width="150" Click="ToButton_Click"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <ProgressBar Height="30" Width="700"/>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="SuspendButton" Grid.Column="1" Content="Suspend" FontSize="24" Width="130" Height="60" IsEnabled="False"/>
+            <Button x:Name="ResumeButton" Grid.Column="2" Content="Resume" FontSize="24" Width="130" Height="60" IsEnabled="False"/>
+            <Button x:Name="StartButton" Grid.Column="3" Content="Start" FontSize="24" Width="130" Height="60" IsEnabled="False"/>
+        </Grid>
     </Grid>
 </Window>

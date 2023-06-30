@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,41 @@ namespace TextCopierApplication
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void FromButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                FileName = "Text file",
+                DefaultExt = ".txt",
+                Filter = "Text documents (.txt)|*.txt"
+            };
+
+            bool? result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                FromTextBox.Text = dialog.FileName;
+                StartButton.IsEnabled = true;
+            }
+        }
+        private void ToButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                FileName = "Text file",
+                DefaultExt = ".txt",
+                Filter = "Text documents (.txt)|*.txt"
+            };
+
+            bool? result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                ToTextBox.Text = dialog.FileName;
+                StartButton.IsEnabled = true;
+            }
         }
     }
 }
